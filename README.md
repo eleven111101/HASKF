@@ -40,6 +40,7 @@ and uses this fused knowledge to discover hazardous patterns, predict risk, anal
   <img src="docs/images/pipeline.png" width="900">
 </p>
 
+
 ## Repository Structure
 
 ```
@@ -273,6 +274,67 @@ Research focus areas:
 - Intelligent Transportation Systems
 - ADAS Safety
 - Machine Learning
+
+---
+
+## Development Phases
+
+### Phase 1 — Foundation (Text Analysis)
+
+**Input**
+- Accident Reports (Text)
+
+**Processing**
+- Text preprocessing
+- NLP-based entity extraction
+- Event extraction
+- Safety ontology mapping
+- Hypergraph construction
+
+**Analytics**
+- Frequent pattern mining
+- Risk scoring
+- Root cause analysis
+
+**Output**
+- Structured driving events
+- Hypergraph knowledge base
+- Hazard discovery
+- ADAS validation scenarios
+- Test cases
+
+---
+
+### Phase 2 — Image Integration
+
+**Capabilities**
+- Accident scene images
+- Object detection (YOLO or similar)
+- Scene understanding
+- Ontology mapping
+- Hypergraph enrichment
+
+---
+
+### Phase 3 — Video Integration
+
+**Capabilities**
+- Traffic videos
+- Vehicle trajectory analysis
+- Event summarization
+- Temporal behavior extraction
+- Dynamic hypergraph updates
+
+---
+
+### Phase 4 — AI Enhancement
+
+**Capabilities**
+- Hypergraph Neural Networks (HGNN)
+- Transformer-based NLP
+- Large Language Models (LLMs)
+- Explainable AI
+- Intelligent scenario generation
 
 ---
 
