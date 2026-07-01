@@ -28,23 +28,17 @@ and uses this fused knowledge to discover hazardous patterns, predict risk, anal
 
 ## Framework Architecture
 
-> *Insert overall framework architecture diagram here.*
-
-```
-docs/images/framework.png
-```
+<p align="center">
+  <img src="docs/images/framework.png" width="900">
+</p>
 
 ---
 
 ## Pipeline Workflow
 
-> *Insert processing pipeline diagram here.*
-
-```
-docs/images/pipeline.png
-```
-
----
+<p align="center">
+  <img src="docs/images/pipeline.png" width="900">
+</p>
 
 ## Repository Structure
 
