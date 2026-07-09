@@ -1,345 +1,184 @@
-# HASKF — Hypergraph-Based ADAS Safety Knowledge Framework
+# HG-ASK Dataset v1.0
+## Hypergraph-Based ADAS Safety Knowledge Dataset
 
-> **A multimodal safety intelligence framework for Advanced Driver Assistance Systems (ADAS)**
-
-<p align="center">
-  <b>Developed and maintained by <i>GRAVITY ~ AI</i></b>
-</p>
+![Version](https://img.shields.io/badge/version-1.0-blue)
+![Dataset](https://img.shields.io/badge/scenarios-5000+-green)
+![License](https://img.shields.io/badge/license-Research-lightgrey)
 
 ---
 
 ## Overview
 
-**HASKF (Hypergraph-Based ADAS Safety Knowledge Framework)** is a research framework that converts multimodal accident data into structured safety knowledge for validating **Advanced Driver Assistance Systems (ADAS)**.
+HG-ASK Dataset v1.0 is a synthetic, engineering-guided ADAS safety validation dataset produced under the **HASKF (Hypergraph-Based ADAS Safety Knowledge Framework)** by **GRAVITY ~ AI**.
 
-Conventional graph-based methods capture only pairwise relationships between entities, which limits their ability to represent the complexity of real-world traffic accidents. HASKF instead uses **hypergraphs**, where a single hyperedge can connect many entities at once — weather, road environment, infrastructure, vehicles, vulnerable road users, driver behavior, and system failures — preserving the full context of each accident event rather than fragmenting it into isolated pairs.
+Instead of representing safety data as simple pairwise graphs, HG-ASK encodes each validation scenario as a **hyperedge** — a single semantic unit connecting all relevant entities (weather, road, sensors, actors, ADAS function, hazard, risk, and outcome) at once. This preserves the full many-to-many context of real ADAS validation scenarios rather than fragmenting it into isolated relationships.
 
-The framework ingests and fuses information from:
-
-- Accident reports
-- Traffic images
-- Driving videos
-- Public safety scenario datasets
-- Simulation data
-
-and uses this fused knowledge to discover hazardous patterns, predict risk, analyze root causes, and generate realistic scenarios for ADAS validation.
-
----
-
-## Framework Architecture
+The dataset was generated using predefined **engineering rules** (based on ISO 26262, SOTIF, government statistics, and research literature) — no scenario was created by random combination.
 
 <p align="center">
-  <img src="docs/images/framework.png" width="900">
+  <img src="docs/images/framework.png" width="900" alt="HASKF Framework Architecture">
+</p>
+
+<p align="center">
+  <img src="docs/images/pipeline.png" width="900" alt="HASKF Pipeline Workflow">
 </p>
 
 ---
 
-## Pipeline Workflow
+## Dataset Statistics
 
-<p align="center">
-  <img src="docs/images/pipeline.png" width="900">
-</p>
+| Property | Value |
+|-----------|--------|
+| Version | 1.0 |
+| Total Scenarios | 5,000+ |
+| Hyperedges | 5,000+ |
+| Entity Types | 20+ |
+| Attributes | 50 |
+| ADAS Functions | 10+ |
+| Collision Types | 12 |
+| Weather Conditions | 8 |
+| Lighting Conditions | 5 |
+| Risk Levels | 4 |
+| ASIL Levels | QM, A, B, C, D |
 
+---
 
-## Repository Structure
+## Package Structure
 
 ```
-HASKF/
+HG-ASK-Dataset/
 │
-├── data/
-│   ├── reports/
-│   ├── images/
-│   ├── videos/
-│   └── scenarios/
-│
-├── ontology/
-│
-├── extraction/
-│   ├── nlp/
-│   ├── image/
-│   └── video/
-│
-├── hypergraph/
-│
-├── analytics/
-│   ├── pattern_mining/
-│   ├── risk_prediction/
-│   └── root_cause/
-│
-├── scenario_generation/
-│
-├── visualization/
-│
-├── docs/
-│   ├── images/
-│   └── paper/
-│
-├── notebooks/
-│
-└── README.md
+├── ADAS_Scenarios
+├── Entities
+├── Hyperedges
+└── Rules
 ```
 
----
+### 1. ADAS_Scenarios
+Complete validation scenarios. One row = one scenario. Primary key: `Scenario_ID` (e.g. `SC0001`).
 
-## Objectives
+### 2. Entities
+All unique entities used by the framework (e.g. Rain, Night, Camera, Radar, Pedestrian, AEB, Collision Risk). Each entity has an `Entity_ID`, `Entity_Type`, and `Entity_Name`.
 
-HASKF is designed to:
+### 3. Hyperedges
+Each hyperedge connects multiple entities into one complete validation context, e.g.:
 
-- Build a unified, multimodal safety knowledge base
-- Extract structured information from heterogeneous accident data
-- Represent accident events as hypergraphs rather than simple graphs
-- Discover recurring hazardous driving patterns
-- Predict risk under novel combinations of driving conditions
-- Explain the root causes of accidents
-- Generate realistic scenarios for ADAS validation
-- Improve test coverage for autonomous driving systems
+```
+H001 = { Rain, Night, Camera, Radar, Pedestrian, AEB, High Risk }
+```
 
----
-
-## Data Sources
-
-HASKF accepts and processes four complementary data modalities.
-
-### 1. Accident Reports
-
-Textual reports describing the sequence of events leading to an accident. Typical fields include weather, time of day, road type, driver actions, vehicle failures, and outcomes. These are processed with **Natural Language Processing (NLP)**.
-
-### 2. Images
-
-Traffic images provide spatial context for an accident scene. Extracted elements typically include vehicles, pedestrians, motorcycles, traffic signs, lane markings, road surface conditions, and weather conditions.
-
-### 3. Videos
-
-Driving videos capture temporal behavior. Extracted events typically include lane changes, braking, vehicle trajectories, traffic density, driver responses, and pedestrian crossings.
-
-### 4. Scenario Library
-
-A curated library of validated scenarios drawn from public datasets and safety investigations. Each scenario specifies environment, road geometry, weather, actors, failure type, and risk level.
+### 4. Rules
+Engineering rules used during synthetic scenario generation (see below).
 
 ---
 
-## Processing Pipeline
+## Scenario Fields (~50 attributes)
 
-| Step | Stage | Description |
-|------|-------|-------------|
-| 1 | **Data Collection** | Gather multimodal accident information from all supported sources. |
-| 2 | **Information Extraction** | Extract entities and events using NLP, image analysis, and video analysis. |
-| 3 | **Structured Event Construction** | Convert extracted information into structured driving events. |
-| 4 | **Safety Ontology Mapping** | Map raw entities onto a standardized safety ontology. |
-| 5 | **Hypergraph Construction** | Represent each accident event as a hyperedge. |
-| 6 | **Safety Analytics** | Run pattern mining, risk prediction, and root cause analysis. |
-| 7 | **Scenario Generation** | Produce realistic scenarios for ADAS validation. |
-| 8 | **ADAS Test Cases** | Package scenarios into simulation-ready test cases. |
+Scenario ID · Hyperedge ID · Collision Type · Weather · Lighting · Road Type · Road Geometry · ODD · Traffic Density · Lane Count · Speed Limit · Ego Speed · Target Speed · Relative Speed · Ego Vehicle · Target Object · Camera Status · Radar Status · LiDAR Status · GPS Status · IMU Status · Sensor Configuration · Sensor Confidence · Fusion Confidence · ADAS Function · Failure Mode · Hazard · Risk Level · Severity · ASIL · Safety Goal ID · Requirement ID · ISO26262 Trace · SOTIF Scenario · Expected Behaviour · Validation Result · Hyperedge Weight · Scenario Confidence · Natural Language Description
 
 ---
 
 ## Hypergraph Representation
 
-A standard graph can only express one relationship at a time:
+A traditional graph expresses one relationship at a time (`Car — Rain`). A hyperedge instead binds the entire scenario context into a single unit:
 
 ```
-Car ---- Rain
-```
-
-A hypergraph, by contrast, can bind an arbitrary number of entities into a single hyperedge — capturing an entire accident context as one unit:
-
-```
+Hyperedge H001
 {
-  Rain,
-  Night,
-  Construction Zone,
-  Motorcycle,
-  Temporary Lane,
-  Emergency Braking
+  Rain, Night, Highway, Camera, Radar, Pedestrian,
+  80 km/h, AEB, Reduced Visibility, Collision Risk,
+  ASIL D, Safety Goal SG001
 }
 ```
 
-This structure enables richer reasoning across multiple simultaneous factors and supports more accurate downstream safety analysis than pairwise graph models.
+<p align="center">
+  <img src="docs/images/hypergraph_visualization.png" width="900" alt="Hypergraph Visualization">
+</p>
 
 ---
 
-## Safety Ontology
+## Engineering Rule Base
 
-Extracted information is standardized into the following concept categories:
+### Environment Rules
+- Rain → Reduced Camera Confidence
+- Fog → Reduced Camera Range → Radar Preferred
+- Snow → Reduced Lane Visibility → Lane Keeping Validation Required
+- Night → Low Illumination → Pedestrian Detection Difficulty Increased
 
-| Category | Examples |
-|----------|----------|
-| **Environmental** | Rain, Fog, Snow, Night, Day |
-| **Road** | Highway, Urban Road, Rural Road, Intersection, Construction Zone |
-| **Road Users** | Car, Truck, Motorcycle, Bicycle, Pedestrian |
-| **Driving Behavior** | Lane Change, Overtaking, Braking, Turning, Driver Takeover |
-| **ADAS Events** | Lane Keeping Failure, Collision Warning, Emergency Braking, Object Detection Failure |
+### Collision Rules
+- Head-on Collision → Forward Collision Warning → AEB → ASIL D
+- Rear-end Collision → Adaptive Cruise Control → AEB
+- Side Collision → Blind Spot Detection → Lane Change Assist
+- Run-off-road → Lane Keeping Assist → Electronic Stability Control
+- Pedestrian Collision → Pedestrian AEB → Camera + Radar Fusion
 
----
+### Sensor Rules
+- Camera Failure → Radar Backup
+- Radar Failure → Camera Degraded Mode
+- LiDAR Failure → Camera + Radar Fusion
+- Camera + Rain → Reduced Visibility → Low Confidence
+- Night + Camera → Low Detection Confidence
+- Fog + Camera → Detection Delay
 
-## Safety Analytics
+### Safety Rules
+- High Risk → ASIL C or D
+- Critical Hazard → Safety Goal Required
+- Safety Goal → Requirement Mapping Required
+- Every Hazard → Minimum One ADAS Function
+- Every ADAS Function → Expected Behaviour → Validation Result
 
-### Pattern Mining
-
-Identifies recurring combinations of hazardous conditions. For example:
-
-```
-Rain + Night + Construction Zone  →  frequently precedes  →  Lane Departure
-```
-
-### Risk Prediction
-
-Estimates the likelihood of hazardous outcomes under new or unseen combinations of driving conditions.
-
-### Root Cause Analysis
-
-Identifies the dominant contributing factors behind an accident, supporting explainability.
-
-### Scenario Generation
-
-Automatically synthesizes ADAS validation scenarios from mined patterns, for example:
-
-```
-Weather:          Heavy Rain
-Time:             Night
-Road:             Construction Zone
-Traffic:          Motorcycle
-Expected Hazard:  Lane Detection Failure
-```
+### Hyperedge Rules
+- One Scenario → Exactly One Hyperedge
+- One Hyperedge → Multiple Connected Entities
+- Entities may belong to multiple Hyperedges
 
 ---
 
-## Technology Stack
+## Dataset Constraints
 
-| Component | Purpose |
-|-----------|---------|
-| Python | Core implementation |
-| NLP | Text information extraction |
-| Computer Vision | Image understanding |
-| Video Processing | Temporal event analysis |
-| Hypergraph | Knowledge representation |
-| Ontology | Semantic modeling |
-| Machine Learning | Risk prediction |
-| Visualization | Knowledge exploration |
+Every scenario satisfies:
 
----
-
-## Acronyms
-
-| Acronym | Meaning |
-|---------|---------|
-| **HASKF** | Hypergraph-Based ADAS Safety Knowledge Framework |
-| **ADAS** | Advanced Driver Assistance Systems |
-| **AI** | Artificial Intelligence |
-| **NLP** | Natural Language Processing |
-| **CV** | Computer Vision |
-| **HG** | Hypergraph |
-| **KB** | Knowledge Base |
-| **HGNN** | Hypergraph Neural Network |
-| **LLM** | Large Language Model |
-| **PoC** | Proof of Concept |
+✓ At least one collision type
+✓ At least one weather condition
+✓ At least one lighting condition
+✓ At least one sensor
+✓ At least one ADAS function
+✓ One hazard
+✓ One risk level
+✓ One ASIL
+✓ One validation result
+✓ One hyperedge
 
 ---
 
-## Future Enhancements
+## Intended Applications
 
-- Transformer-based NLP
-- Advanced object detection
-- Video understanding models
-- Hypergraph Neural Networks (HGNNs)
-- Explainable AI
-- Simulation integration
-- Digital twin support
-- Real-time risk assessment
+- Hypergraph learning & Hypergraph Neural Networks (HGNNs)
+- Knowledge graph construction and comparison
+- ADAS validation research
+- Safety knowledge representation & reasoning
+- Retrieval-Augmented Generation (RAG)
+- Scenario generation
+- Safety traceability analysis
+
+---
+
+## Limitations
+
+This is a research-oriented **synthetic** dataset generated from engineering rules and public-domain safety concepts. It should not be interpreted as real-world crash records or official validation results.
 
 ---
 
 ## Citation
 
-If you use this repository in your research, please cite the corresponding publication once it becomes available.
+```
+HG-ASK Dataset v1.0
+Hypergraph-Based ADAS Safety Knowledge Dataset for Validation Scenario Generation
+GRAVITY ~ AI, 2026
+```
 
 ---
 
-## License
+## Author
 
-Released under the MIT License.
-
----
-
-## Maintainer
-
-**GRAVITY ~ AI**
-
-Research focus areas:
-
-- Artificial Intelligence
-- Knowledge Graphs & Hypergraphs
-- Autonomous Driving
-- Computer Vision
-- Intelligent Transportation Systems
-- ADAS Safety
-- Machine Learning
-
----
-
-## Development Phases
-
-### Phase 1 — Foundation (Text Analysis)
-
-**Input**
-- Accident Reports (Text)
-
-**Processing**
-- Text preprocessing
-- NLP-based entity extraction
-- Event extraction
-- Safety ontology mapping
-- Hypergraph construction
-
-**Analytics**
-- Frequent pattern mining
-- Risk scoring
-- Root cause analysis
-
-**Output**
-- Structured driving events
-- Hypergraph knowledge base
-- Hazard discovery
-- ADAS validation scenarios
-- Test cases
-
----
-
-### Phase 2 — Image Integration
-
-**Capabilities**
-- Accident scene images
-- Object detection (YOLO or similar)
-- Scene understanding
-- Ontology mapping
-- Hypergraph enrichment
-
----
-
-### Phase 3 — Video Integration
-
-**Capabilities**
-- Traffic videos
-- Vehicle trajectory analysis
-- Event summarization
-- Temporal behavior extraction
-- Dynamic hypergraph updates
-
----
-
-### Phase 4 — AI Enhancement
-
-**Capabilities**
-- Hypergraph Neural Networks (HGNN)
-- Transformer-based NLP
-- Large Language Models (LLMs)
-- Explainable AI
-- Intelligent scenario generation
-
----
-
-<p align="center">
-<b>HASKF</b><br>
-Hypergraph-Based ADAS Safety Knowledge Framework<br><br>
-Developed with ❤️ by <b>GRAVITY ~ AI</b>
-</p>
+**GRAVITY ~ AI** — Hypergraph-Based ADAS Safety Knowledge Framework (HASKF), v1.0
